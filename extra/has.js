@@ -1,4 +1,4 @@
-var match = require('./match');
+var match = require('../lib/match');
 
 module.exports = function has() {
   var args = Array.prototype.slice.call(arguments);

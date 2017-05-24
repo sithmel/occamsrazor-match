@@ -1,8 +1,8 @@
 var assert = require('chai').assert;
 var match = require('../lib/match');
-var has = require('../lib/has');
-var isInstanceOf = require('../lib/isInstanceOf');
-var isPrototypeOf = require('../lib/isPrototypeOf');
+var has = require('../extra/has');
+var isInstanceOf = require('../extra/isInstanceOf');
+var isPrototypeOf = require('../extra/isPrototypeOf');
 
 describe('validator name', function () {
   describe('match', function () {

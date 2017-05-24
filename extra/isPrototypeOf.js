@@ -1,6 +1,4 @@
-function setName(fn, name) {
-  Object.defineProperty(fn, 'name', { value: name });
-}
+var setName = require('../lib/setName');
 
 module.exports = function isPrototypeOf(proto) {
   var func = function (obj) { return proto.isPrototypeOf(obj); };
