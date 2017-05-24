@@ -31,7 +31,7 @@ match
 =====
 This is the main helper, and can be used to create a lot of different validators.
 
-These one matches the value in it.
+These ones matches the value in it.
 ```js
 var isFive = match(5);
 var isNull = match(null);
@@ -73,14 +73,14 @@ It looks like there is no real reason to do it, this will make more sense in a b
 
 match - recursion
 -----------------
-"match" can take an array or an object and perform nested validation:
+"match" can take an array or an object and perform a nested validation:
 ```js
 var isPoint = match({ x : undefined, y: undefined });
 isPoint({ x: 1, y: 2 }); // true
 isPoint({ x: 1, y: 2, z: 3 }); // true
 isPoint({ x: 1, z: 3 }); // false
 ```
-Object matching ensures the object has all the property specified. It is not in the scope of the library find out what an object isn't, but rather what it is.
+Object matching ensures the object has all the properties specified. It is not in the scope of the library find out what an object isn't, but rather what it is.
 Passing values as undefined indicates that I don't really care about their value.
 ```js
 var isPointOnXaxis = match({ x : 0, y: undefined });
@@ -120,14 +120,14 @@ var isPoint = match({ x : undefined, y: undefined });
 
 isInstanceOf
 =============
-Checks if an object has been built with a specific factory function:
+It checks if an object has been built with a specific factory function:
 ```js
 var isPoint = isInstanceOf(Point);
 ```
 
 isPrototypeOf
 =============
-Checks if an object is the prototype of another:
+It checks if an object is the prototype of another:
 ```js
 var isPoint = isPrototypeOf(Point.prototype);
 ```
