@@ -19,12 +19,16 @@ Writing complex validators may be a bit verbose. This library helps you to write
 
 Importing the library
 =====================
-This library contains a main helper called "match" and 3 extra ones: has, isInstanceOf and isPrototypeOf.
+This library contains a main helper called "match" and some extra ones.
 ```js
 var match = require('occamsrazor-match');
 var has = require('occamsrazor-match/extra/has');
 var isInstanceOf = require('occamsrazor-match/extra/isInstanceOf');
 var isPrototypeOf = require('occamsrazor-match/extra/isPrototypeOf');
+
+var not = require('occamsrazor-match/extra/not');
+var or = require('occamsrazor-match/extra/or');
+var and = require('occamsrazor-match/extra/and');
 ```
 
 match
@@ -111,7 +115,7 @@ has
 ===
 This is a shortcut for a very common match:
 ```js
-var isPoint = has('x', 'y');
+var isPoint = has(['x', 'y']);
 ```
 is equivalent to:
 ```js
@@ -132,6 +136,37 @@ It checks if an object is the prototype of another:
 var isPoint = isPrototypeOf(Point.prototype);
 ```
 
+not
+===
+Negate the result of a validator. I can take either a function or the argument used for the match function.
+```js
+var isNotAPoint = not(isPrototypeOf(Point.prototype));
+var isNotFive = not(5);
+```
+
+and
+===
+A validator that returns true only if all validators passed as argument return true. Every validator passed is transformed into a function using "match".
+```js
+function isOdd(n) { return n % 2 !== 0; }
+function isInteger(n) { return n % 1 === 0; }
+function isSquares(n) { return isInteger(Math.sqrt(n)); }
+var oddAndSquared = and([isOdd, isSquared]);
+oddAndSquared(4); // false
+oddAndSquared(9); // true
+```
+
+or
+==
+A validator that returns true if at least one validator passed as argument returns true. Every validator passed is transformed into a function using "match".
+```js
+var is5or9 = or(5, 9);
+is5or9(5); // true
+is5or9(9); // true
+is5or9(3); // false
+```
+
+
 Mixing them up!
 ===============
 Being able to use functions, you can mix-up and reuse validators:
@@ -142,6 +177,7 @@ var isTriangle = match([isPoint, isPoint, isPoint]);
 var containsSquareAndTriangle = {
   triangle: isTriangle,
   square: isSquare,
+  extra: or([isSquare, isTriangle])
 };
 ```
 
