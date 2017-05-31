@@ -166,7 +166,6 @@ is5or9(9); // true
 is5or9(3); // false
 ```
 
-
 Mixing them up!
 ===============
 Being able to use functions, you can mix-up and reuse validators:
