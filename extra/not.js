@@ -1,11 +1,12 @@
 var match = require('../lib/match');
 var setName = require('../lib/setName');
+var logger = require('../lib/logger');
 
 module.exports = function not(arg) {
   var func = match(arg);
-  var newfunc = function (o, callback, path) {
-    return !func(o, callback, path);
+  var newfunc = function (o) {
+    return !func(o);
   };
   setName(newfunc, 'not(' + func.name + ')');
-  return newfunc;
+  return logger(newfunc);
 };
