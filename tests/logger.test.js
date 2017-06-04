@@ -43,6 +43,17 @@ describe('logger', function () {
         { path: '[1]', name: 'isNumber:2', result: true, value: 2 } ]);
     });
 
+    it('must log an array (valid false)', function () {
+      var result = validationResult(true);
+      var validator = match([1, 2]);
+      validator([3, 2], result);
+
+      assert.deepEqual(result(), [
+        { path: '', name: 'isArray', result: true, value: [ 3, 2 ] },
+        { path: '[0]', name: 'isNumber:1', result: false, value: 3 },
+        { path: '[1]', name: 'isNumber:2', result: true, value: 2 } ]);
+    });
+
     it('must log an object', function () {
       var result = validationResult(true);
       var validator = match({ key1: 1, key2: 2 });
@@ -66,6 +77,19 @@ describe('logger', function () {
         { path: 'key1', name: 'hasAttribute', result: true, value: { key1: 1 } },
         { path: 'key1', name: 'isNumber:1', result: true, value: 1 },
         { path: 'key2', name: 'hasAttribute', result: false, value: { key1: 1 } }]);
+    });
+
+    it('must log an object, validate false', function () {
+      var result = validationResult(true);
+      var validator = match({ key1: 1, key2: 2 });
+      validator({ key1: 3, key2: 2 }, result);
+
+      assert.deepEqual(result(), [
+        { path: '', name: 'isObject', result: true, value: { key1: 3, key2: 2 } },
+        { path: 'key1', name: 'hasAttribute', result: true, value: { key1: 3, key2: 2 } },
+        { path: 'key1', name: 'isNumber:1', result: false, value: 3 },
+        { path: 'key2', name: 'hasAttribute', result: true, value: { key1: 3, key2: 2 } },
+        { path: 'key2', name: 'isNumber:2', result: true, value: 2 } ]);
     });
 
     it('must log an object, validate false, show only false', function () {
@@ -143,6 +167,7 @@ describe('logger', function () {
       validator([1, 3], result);
       assert.deepEqual(result(), [
         { path: '', name: 'sum3', result: false, value: [1, 3] },
+        { path: '', name: 'are2Items', result: true, value: [1, 3] },
       ]);
     });
   });
@@ -156,6 +181,7 @@ describe('logger', function () {
       validator([1, 2], result);
       assert.deepEqual(result(), [
         { path: '', name: 'sum3', result: true, value: [1, 2] },
+        { path: '', name: 'are2Items', result: true, value: [1, 2] },
       ]);
     });
 
@@ -173,7 +199,7 @@ describe('logger', function () {
   });
 
   describe('match - composed object', function () {
-    it('must log or', function () {
+    it('must log composed object', function () {
       var result = validationResult(true);
       var validator = match({
         user: {
@@ -198,6 +224,7 @@ describe('logger', function () {
         { path: 'user.name', name: 'isRegExp:/[a-zA-Z]+/', result: true, value: 'Maurizio' },
         { path: 'user.jobtitle', name: 'hasAttribute', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
         { path: 'user.jobtitle', name: 'isString:engineer', result: true, value: 'engineer' },
+        { path: 'user.jobtitle', name: 'isString:analyst', result: false, value: 'engineer' },
         { path: 'deleted', name: 'hasAttribute', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
         { path: 'deleted', name: 'not(isTrue)', result: true, value: false }]);
     });

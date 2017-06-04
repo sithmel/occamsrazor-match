@@ -6,12 +6,16 @@ module.exports = function or(args) {
   var funcs = args.map(function (f) { return match(f); });
 
   var newfunc = function (o, callback, path) {
+    var result = false;
     for (var i = 0; i < funcs.length; i++) {
       if (funcs[i](o, callback, path)) {
-        return true;
+        if (!callback) {
+          return true;
+        }
+        result = true;
       }
     }
-    return false;
+    return result;
   };
 
   var funcName = funcs
