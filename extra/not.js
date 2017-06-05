@@ -1,5 +1,6 @@
 var match = require('../lib/match');
 var setName = require('../lib/setName');
+var logger = require('../lib/logger');
 
 module.exports = function not(arg) {
   var func = match(arg);
@@ -7,5 +8,5 @@ module.exports = function not(arg) {
     return !func(o);
   };
   setName(newfunc, 'not(' + func.name + ')');
-  return newfunc;
+  return logger(newfunc);
 };

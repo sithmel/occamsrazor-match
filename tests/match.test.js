@@ -43,7 +43,7 @@ describe('match', function () {
         x: '10', y: undefined
       }
     });
-    assert.isTrue(hasX10({ center: { x:'10', y:'1' } } ));
+    assert.isTrue(hasX10({ center: { x:'10', y:'1' } }));
     assert.isFalse(hasX10( {center: { x:'11', y:'1' } } ));
   });
 

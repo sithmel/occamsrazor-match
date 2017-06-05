@@ -34,18 +34,18 @@ describe('validator name', function () {
       assert.equal(match(function test() {}).name, 'test');
     });
     it('must return name for array', function () {
-      assert.equal(match([]).name, 'isArray:[]');
+      assert.equal(match([]).name, 'array:[]');
     });
     it('must return name for array (2)', function () {
-      assert.equal(match([1,'test']).name, 'isArray:[isNumber:1,isString:test]');
+      assert.equal(match([1,'test']).name, 'array:[isNumber:1,isString:test]');
     });
     it('must return name for object', function () {
-      assert.equal(match({}).name, 'isObject:{}');
+      assert.equal(match({}).name, 'object:{}');
     });
   });
   describe('has', function () {
     it('must return name', function () {
-      assert.equal(has(['test1', 'test2']).name, 'isObject:{test1:isAnything,test2:isAnything}');
+      assert.equal(has(['test1', 'test2']).name, 'object:{test1:isAnything,test2:isAnything}');
     });
   });
   describe('isInstanceOf', function () {

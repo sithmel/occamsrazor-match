@@ -5,9 +5,9 @@ module.exports = function and(args) {
   if (!Array.isArray(args)) throw new Error('"and": requires an array');
   var funcs = args.map(function (f) { return match(f); });
 
-  var newfunc = function (o) {
+  var newfunc = function (o, callback, path) {
     for (var i = 0; i < funcs.length; i++) {
-      if (!funcs[i](o)) {
+      if (!funcs[i](o, callback, path)) {
         return false;
       }
     }
