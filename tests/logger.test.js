@@ -167,7 +167,6 @@ describe('logger', function () {
       validator([1, 3], result);
       assert.deepEqual(result(), [
         { path: '', name: 'sum3', result: false, value: [1, 3] },
-        { path: '', name: 'are2Items', result: true, value: [1, 3] },
       ]);
     });
   });
@@ -180,8 +179,7 @@ describe('logger', function () {
         function are2Items(o) { return o.length === 2; }]);
       validator([1, 2], result);
       assert.deepEqual(result(), [
-        { path: '', name: 'sum3', result: true, value: [1, 2] },
-        { path: '', name: 'are2Items', result: true, value: [1, 2] },
+       { path: '', name: 'sum3', result: true, value: [1, 2] },
       ]);
     });
 
@@ -224,7 +222,6 @@ describe('logger', function () {
         { path: 'user.name', name: 'isRegExp:/[a-zA-Z]+/', result: true, value: 'Maurizio' },
         { path: 'user.jobtitle', name: 'hasAttribute', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
         { path: 'user.jobtitle', name: 'isString:engineer', result: true, value: 'engineer' },
-        { path: 'user.jobtitle', name: 'isString:analyst', result: false, value: 'engineer' },
         { path: 'deleted', name: 'hasAttribute', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
         { path: 'deleted', name: 'not(isTrue)', result: true, value: false }]);
     });

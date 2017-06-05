@@ -166,6 +166,22 @@ is5or9(9); // true
 is5or9(3); // false
 ```
 
+Custom validator
+================
+A validator is a simple function that given a value returns true or false. You can build your own and use it together with the other functions:
+```js
+function isEven(n) {return o % 2 === 0;};
+
+match(isEven);
+
+or([isEven, match(null)]);
+
+match({
+  numberOfShoes: isEven
+});
+```
+Note: I have used a named function (not an anonymous function expression or an arrow function). It is important as logging and debugging rely entirely on the function name.
+
 Mixing them up!
 ===============
 Being able to use functions, you can mix-up and reuse validators:
@@ -186,7 +202,49 @@ Helpers provide always a descriptive name to the generated functions:
 ```js
 match(true).name === 'isTrue'
 match(2).name === 'isNumber:2'
-match([1,'test']).name === 'isArray:[isNumber:1,isString:test]'
-has('test1', 'test2').name === 'isObject:{test1:isAnything,test2:isAnything}'
+match([1,'test']).name === 'array:[isNumber:1,isString:test]'
+has('test1', 'test2').name === 'object:{test1:isAnything,test2:isAnything}'
 ```
 This can be very helpful for debugging.
+
+Validation introspection
+========================
+This feature can be useful to have some insight about the validation. Like where did it fail, for example.
+When validating a value you can pass a function, as a second argument. This function is called whenever a validation step succeed or fail:
+```js
+var validator = match({
+  user: {
+    name: /[a-zA-Z]+/,
+    jobtitle: or(['engineer', 'analyst'])
+  },
+  deleted: not(true)
+});
+
+validator({
+  user: {
+    name: 'Maurizio',
+    jobtitle: 'engineer'
+  },
+  deleted: false
+}, function (val) {
+  // val is an object containing:
+  {
+    path: path, // if this validation step is nested in an object or array
+    name: name, // name of the function
+    result: result, // true or false
+    value: o // the value on which the validator ran
+  }  
+});
+```
+Returning:
+```js
+{ path: '', name: 'isObject', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
+{ path: 'user', name: 'hasAttribute', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
+{ path: 'user', name: 'isObject', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
+{ path: 'user.name', name: 'hasAttribute', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
+{ path: 'user.name', name: 'isRegExp:/[a-zA-Z]+/', result: true, value: 'Maurizio' },
+{ path: 'user.jobtitle', name: 'hasAttribute', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
+{ path: 'user.jobtitle', name: 'isString:engineer', result: true, value: 'engineer' },
+{ path: 'deleted', name: 'hasAttribute', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
+{ path: 'deleted', name: 'not(isTrue)', result: true, value: false }]);
+```

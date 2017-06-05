@@ -6,16 +6,12 @@ module.exports = function and(args) {
   var funcs = args.map(function (f) { return match(f); });
 
   var newfunc = function (o, callback, path) {
-    var result = true;
     for (var i = 0; i < funcs.length; i++) {
       if (!funcs[i](o, callback, path)) {
-        if (!callback) {
-          return false;
-        }
-        result = false;
+        return false;
       }
     }
-    return result;
+    return true;
   };
 
   var funcName = funcs
