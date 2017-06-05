@@ -57,6 +57,12 @@ describe('not', function () {
   it('must not match', function () {
     assert.isFalse(notWidth('width'));
   });
+
+  it('must never match', function () {
+    var v = not();
+    assert.isFalse(v('any'));
+  });
+
 });
 
 describe('or', function () {
@@ -73,6 +79,11 @@ describe('or', function () {
 
   it('must not match', function () {
     assert.isFalse(fiveOrNine('width'));
+  });
+
+  it('must never match', function () {
+    var v = or([]);
+    assert.isTrue(v('width'));
   });
 });
 
@@ -91,5 +102,10 @@ describe('and', function () {
   it('must not match', function () {
     assert.isFalse(fiveAndOdd('width'));
     assert.isFalse(fiveAndOdd(9));
+  });
+
+  it('must always match', function () {
+    var v = and([]);
+    assert.isTrue(v('width'));
   });
 });
