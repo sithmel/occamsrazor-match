@@ -29,6 +29,8 @@ var isPrototypeOf = require('occamsrazor-match/extra/isPrototypeOf');
 var not = require('occamsrazor-match/extra/not');
 var or = require('occamsrazor-match/extra/or');
 var and = require('occamsrazor-match/extra/and');
+var some = require('occamsrazor-match/extra/some');
+var every = require('occamsrazor-match/extra/every');
 ```
 
 match
@@ -165,6 +167,23 @@ is5or9(5); // true
 is5or9(9); // true
 is5or9(3); // false
 ```
+
+some/every
+==========
+This couple of validators can be used to validate arrays. It takes a validator as argument (it uses "match" behind the scene) and checks the array items against that validator. In the case of "some", at least a check should pass to return true. In the case of "every", all of them should pass.
+```js
+var atLeastOne5 = some(5);
+atLeastOne5([1, 2, 5]); // true
+atLeastOne5([5, 5, 2]); // true
+atLeastOne5([1, 2, 3]); // false
+```
+
+```js
+var allNegatives = every(function isNegative(n) { return n < 0; });
+allNegatives([-1, -2, -5]); // true
+allNegatives([-5, 5, -2]); // false
+```
+
 
 Custom validator
 ================

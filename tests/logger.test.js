@@ -4,6 +4,7 @@ var has = require('../extra/has');
 var not = require('../extra/not');
 var and = require('../extra/and');
 var or = require('../extra/or');
+var arrayOf = require('../extra/arrayOf');
 
 var isPrototypeOf = require('../extra/isPrototypeOf');
 var isInstanceOf = require('../extra/isInstanceOf');
@@ -192,6 +193,30 @@ describe('logger', function () {
       assert.deepEqual(result(), [
         { path: '', name: 'sum3', result: false, value: [1, 3] },
         { path: '', name: 'are2Items', result: true, value: [1, 3] },
+      ]);
+    });
+  });
+
+  describe('arrayOf', function () {
+    it('must log arrayOf', function () {
+      var result = validationResult(true);
+      var validator = arrayOf(5);
+      validator([5, 5], result);
+      assert.deepEqual(result(), [
+       { path: '', name: 'isArray', result: true, value: [5, 5] },
+       { path: '[0]', name: 'isNumber:5', result: true, value: 5 },
+       { path: '[1]', name: 'isNumber:5', result: true, value: 5 },
+      ]);
+    });
+
+    it('must log arrayOf, one fails', function () {
+      var result = validationResult(true);
+      var validator = arrayOf(5);
+      validator([2, 5], result);
+      assert.deepEqual(result(), [
+       { path: '', name: 'isArray', result: true, value: [2, 5] },
+       { path: '[0]', name: 'isNumber:5', result: false, value: 2 },
+       { path: '[1]', name: 'isNumber:5', result: true, value: 5 },
       ]);
     });
   });

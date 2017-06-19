@@ -5,6 +5,9 @@ var isPrototypeOf = require('../extra/isPrototypeOf');
 var not = require('../extra/not');
 var and = require('../extra/and');
 var or = require('../extra/or');
+var arrayOf = require('../extra/arrayOf');
+var every = require('../extra/every');
+var some = require('../extra/some');
 
 describe('isPrototype/isInstanceOf', function () {
   var Square, square;
@@ -107,5 +110,81 @@ describe('and', function () {
   it('must always match', function () {
     var v = and([]);
     assert.isTrue(v('width'));
+  });
+});
+
+describe('arrayOf', function () {
+  var areFive;
+
+  before(function () {
+    areFive = arrayOf(5);
+  });
+
+  it('must match', function () {
+    assert.isTrue(areFive([5]));
+  });
+
+  it('must match (2)', function () {
+    assert.isTrue(areFive([5, 5]));
+  });
+
+  it('must not match', function () {
+    assert.isFalse(areFive([3]));
+  });
+
+  it('must not match (2)', function () {
+    assert.isFalse(areFive([5, 3]));
+  });
+});
+
+describe('every', function () {
+  var areFive;
+
+  before(function () {
+    areFive = every(5);
+  });
+
+  it('must match', function () {
+    assert.isTrue(areFive([5]));
+  });
+
+  it('must match (2)', function () {
+    assert.isTrue(areFive([5, 5]));
+  });
+
+  it('must not match', function () {
+    assert.isFalse(areFive([3]));
+  });
+
+  it('must not match (2)', function () {
+    assert.isFalse(areFive([5, 3]));
+  });
+});
+
+describe('some', function () {
+  var someFive;
+
+  before(function () {
+    someFive = some(5);
+  });
+
+  it('must match', function () {
+    assert.isTrue(someFive([5]));
+  });
+
+  it('must match (2)', function () {
+    assert.isTrue(someFive([5, 5]));
+  });
+
+  it('must not match', function () {
+    assert.isFalse(someFive([3]));
+  });
+
+  it('must not match (2)', function () {
+    assert.isTrue(someFive([5, 3]));
+  });
+
+  it('must not match (3)', function () {
+    assert.isTrue(someFive([3, 5]));
   });
 });

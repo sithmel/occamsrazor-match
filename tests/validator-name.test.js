@@ -6,6 +6,7 @@ var isPrototypeOf = require('../extra/isPrototypeOf');
 var not = require('../extra/not');
 var and = require('../extra/and');
 var or = require('../extra/or');
+var arrayOf = require('../extra/arrayOf');
 
 describe('validator name', function () {
   describe('match', function () {
@@ -71,6 +72,11 @@ describe('validator name', function () {
   describe('and', function () {
     it('must return name', function () {
       assert.equal(and([1, 2]).name, 'and(isNumber:1 isNumber:2)');
+    });
+  });
+  describe('arrayOf', function () {
+    it('must return name', function () {
+      assert.equal(arrayOf(5).name, 'every(isNumber:5)');
     });
   });
 
