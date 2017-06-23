@@ -36,6 +36,5 @@ module.exports = function arrayOf(args, some) {
     }
     return result;
   };
-  setName(func, prefixName + '(' + val.name + ')');
-  return func;
+  return setName(func, prefixName + '(' + val.name + ')');
 };

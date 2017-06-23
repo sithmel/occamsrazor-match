@@ -24,6 +24,5 @@ module.exports = function and(args) {
     .map(function (f) { return f.name; })
     .join(' ');
 
-  setName(newfunc, 'and(' + funcName + ')');
-  return newfunc;
+  return setName(newfunc, 'and(' + funcName + ')');
 };

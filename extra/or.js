@@ -24,6 +24,5 @@ module.exports = function or(args) {
     .map(function (f) { return f.name; })
     .join(' ');
 
-  setName(newfunc, 'or(' + funcName + ')');
-  return newfunc;
+  return setName(newfunc, 'or(' + funcName + ')');
 };

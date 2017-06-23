@@ -7,6 +7,5 @@ module.exports = function not(arg) {
   var newfunc = function (o) {
     return !func(o);
   };
-  setName(newfunc, 'not(' + func.name + ')');
-  return logger(newfunc);
+  return logger(setName(newfunc, 'not(' + func.name + ')'));
 };
