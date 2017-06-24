@@ -20,10 +20,7 @@ module.exports = function arrayOf(args, some) {
       result = val(arr[i], callback, path + '[' + i + ']');
       if (some) {
         if (result) {
-          if (!callback) {
-            return true;
-          }
-          result = true; // extra check only if callback
+          return true; // if true no needs to go on
         }
       } else {
         if (!result) {

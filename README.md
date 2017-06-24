@@ -229,10 +229,10 @@ has('test1', 'test2').name === 'object:{test1:isAnything,test2:isAnything}'
 ```
 This can be very helpful for debugging.
 
-Validation introspection
-========================
-This feature can be useful to have some insight about the validation. Like where did it fail, for example.
-When validating a value you can pass a function, as a second argument. This function is called whenever a validation step succeed or fail:
+Validation errors
+=================
+This feature can be useful to have some insight about what went wrong in the validation.
+When validating a value you can pass a function, as a second argument. This function is called whenever a validation step fail (only if it is relevant to the validation):
 ```js
 var validator = match({
   user: {
@@ -247,26 +247,27 @@ validator({
     name: 'Maurizio',
     jobtitle: 'engineer'
   },
-  deleted: false
+  deleted: true
 }, function (val) {
   // val is an object containing:
   {
     path: path, // if this validation step is nested in an object or array
     name: name, // name of the function
-    result: result, // true or false
     value: o // the value on which the validator ran
   }  
 });
 ```
 Returning:
 ```js
-{ path: '', name: 'isObject', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
-{ path: 'user', name: 'hasAttribute', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
-{ path: 'user', name: 'isObject', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
-{ path: 'user.name', name: 'hasAttribute', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
-{ path: 'user.name', name: 'isRegExp:/[a-zA-Z]+/', result: true, value: 'Maurizio' },
-{ path: 'user.jobtitle', name: 'hasAttribute', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
-{ path: 'user.jobtitle', name: 'isString:engineer', result: true, value: 'engineer' },
-{ path: 'deleted', name: 'hasAttribute', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
-{ path: 'deleted', name: 'not(isTrue)', result: true, value: false }]);
+{ path: 'deleted', name: 'not(isTrue)', result: true, value: true }]);
+```
+If you want to collect all this informations in an array you can use the validationErrors helper:
+```js
+var validationErrors = require('occamsrazor-match/extra/validationErrors');
+...
+var errors = validationErrors();
+var validator = arrayOf(5);
+validator([5, 5], errors);
+
+console.log(errors()); // returns a list of all errors
 ```

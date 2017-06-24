@@ -8,222 +8,192 @@ var arrayOf = require('../extra/arrayOf');
 
 var isPrototypeOf = require('../extra/isPrototypeOf');
 var isInstanceOf = require('../extra/isInstanceOf');
-var validationResult = require('../extra/validationResult');
+var validationErrors = require('../extra/validationErrors');
 
 describe('logger', function () {
   describe('match - simple objects', function () {
     it('must log simple object', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = match(1);
-      validator(1, result);
-      assert.deepEqual(result(), [ { path: '', name: 'isNumber:1', result: true, value: 1 } ]);
+      validator(1, errors);
+      assert.deepEqual(errors(), []);
     });
 
     it('must log simple object - false', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = match(1);
-      validator(2, result);
-      assert.deepEqual(result(), [ { path: '', name: 'isNumber:1', result: false, value: 2 } ]);
+      validator(2, errors);
+      assert.deepEqual(errors(), [ { path: '', name: 'isNumber:1', value: 2 } ]);
     });
 
     it('must log a custom function', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = match(function isCool(o) { return o === 'cool'; });
-      validator('cool', result);
-      assert.deepEqual(result(), [ { path: '', name: 'isCool', result: true, value: 'cool' } ]);
+      validator('cool', errors);
+      assert.deepEqual(errors(), []);
     });
 
     it('must log an array', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = match([1, 2]);
-      validator([1, 2], result);
+      validator([1, 2], errors);
 
-      assert.deepEqual(result(), [
-        { path: '', name: 'isArray', result: true, value: [ 1, 2 ] },
-        { path: '[0]', name: 'isNumber:1', result: true, value: 1 },
-        { path: '[1]', name: 'isNumber:2', result: true, value: 2 } ]);
+      assert.deepEqual(errors(), []);
     });
 
     it('must log an array (valid false)', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = match([1, 2]);
-      validator([3, 2], result);
+      validator([3, 2], errors);
 
-      assert.deepEqual(result(), [
-        { path: '', name: 'isArray', result: true, value: [ 3, 2 ] },
-        { path: '[0]', name: 'isNumber:1', result: false, value: 3 },
-        { path: '[1]', name: 'isNumber:2', result: true, value: 2 } ]);
+      assert.deepEqual(errors(), [
+        { path: '[0]', name: 'isNumber:1', value: 3 }
+      ]);
     });
 
     it('must log an object', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = match({ key1: 1, key2: 2 });
-      validator({ key1: 1, key2: 2 }, result);
+      validator({ key1: 1, key2: 2 }, errors);
 
-      assert.deepEqual(result(), [
-        { path: '', name: 'isObject', result: true, value: { key1: 1, key2: 2 } },
-        { path: 'key1', name: 'hasAttribute', result: true, value: { key1: 1, key2: 2 } },
-        { path: 'key1', name: 'isNumber:1', result: true, value: 1 },
-        { path: 'key2', name: 'hasAttribute', result: true, value: { key1: 1, key2: 2 } },
-        { path: 'key2', name: 'isNumber:2', result: true, value: 2 } ]);
+      assert.deepEqual(errors(), []);
     });
 
     it('must log an object, validate false', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = match({ key1: 1, key2: 2 });
-      validator({ key1: 1 }, result);
+      validator({ key1: 1 }, errors);
 
-      assert.deepEqual(result(), [
-        { path: '', name: 'isObject', result: true, value: { key1: 1 } },
-        { path: 'key1', name: 'hasAttribute', result: true, value: { key1: 1 } },
-        { path: 'key1', name: 'isNumber:1', result: true, value: 1 },
-        { path: 'key2', name: 'hasAttribute', result: false, value: { key1: 1 } }]);
+      assert.deepEqual(errors(), [
+        { path: 'key2', name: 'hasAttribute', value: { key1: 1 } }]);
     });
 
     it('must log an object, validate false', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = match({ key1: 1, key2: 2 });
-      validator({ key1: 3, key2: 2 }, result);
+      validator({ key1: 3, key2: 2 }, errors);
 
-      assert.deepEqual(result(), [
-        { path: '', name: 'isObject', result: true, value: { key1: 3, key2: 2 } },
-        { path: 'key1', name: 'hasAttribute', result: true, value: { key1: 3, key2: 2 } },
-        { path: 'key1', name: 'isNumber:1', result: false, value: 3 },
-        { path: 'key2', name: 'hasAttribute', result: true, value: { key1: 3, key2: 2 } },
-        { path: 'key2', name: 'isNumber:2', result: true, value: 2 } ]);
-    });
-
-    it('must log an object, validate false, show only false', function () {
-      var result = validationResult(false);
-      var validator = match({ key1: 1, key2: 2 });
-      validator({ key1: 1 }, result);
-
-      assert.deepEqual(result(), [
-        { path: 'key2', name: 'hasAttribute', result: false, value: { key1: 1 } }]);
+      assert.deepEqual(errors(), [
+        { path: 'key1', name: 'isNumber:1', value: 3 },
+      ]);
     });
   });
 
   describe('has', function () {
     it('must log simple object', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = has(['test1', 'test2']);
-      validator({test1: 1, test2: 2}, result);
-      assert.deepEqual(result(), [
-        { path: '', name: 'isObject', result: true, value: {test1: 1, test2: 2} },
-        { path: 'test1', name: 'hasAttribute', result: true, value: {test1: 1, test2: 2} },
-        { path: 'test2', name: 'hasAttribute', result: true, value: {test1: 1, test2: 2} }
-      ]);
+      validator({test1: 1, test2: 2}, errors);
+      assert.deepEqual(errors(), []);
     });
   });
 
   describe('isPropotypeOf, isInstanceOf', function () {
     it('must log isPropotypeOf', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = isPrototypeOf(Array.prototype);
-      validator([], result);
-      assert.deepEqual(result(), [
-        { path: '', name: 'isPrototypeOf:Array', result: true, value: [] },
-      ]);
+      validator([], errors);
+      assert.deepEqual(errors(), []);
     });
 
     it('must log isInstanceOf', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = isInstanceOf(Array);
-      validator([], result);
-      assert.deepEqual(result(), [
-        { path: '', name: 'isInstanceOf:Array', result: true, value: [] },
-      ]);
+      validator([], errors);
+      assert.deepEqual(errors(), []);
     });
   });
 
   describe('not', function () {
     it('must log not', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = not(1);
-      validator(1, result);
-      assert.deepEqual(result(), [
-        { path: '', name: 'not(isNumber:1)', result: false, value: 1 },
+      validator(1, errors);
+      assert.deepEqual(errors(), [
+        { path: '', name: 'not(isNumber:1)', value: 1 },
       ]);
     });
   });
 
   describe('and', function () {
     it('must log and', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = and([
         function sum3(o) { return o[0] + o[1] === 3; },
         function are2Items(o) { return o.length === 2; }]);
-      validator([1, 2], result);
-      assert.deepEqual(result(), [
-        { path: '', name: 'sum3', result: true, value: [1, 2] },
-        { path: '', name: 'are2Items', result: true, value: [1, 2] },
-      ]);
+      validator([1, 2], errors);
+      assert.deepEqual(errors(), []);
     });
 
     it('must log and, one fails', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = and([
         function sum3(o) { return o[0] + o[1] === 3; },
         function are2Items(o) { return o.length === 2; }]);
-      validator([1, 3], result);
-      assert.deepEqual(result(), [
-        { path: '', name: 'sum3', result: false, value: [1, 3] },
+      validator([1, 3], errors);
+      assert.deepEqual(errors(), [
+        { path: '', name: 'sum3', value: [1, 3] },
       ]);
     });
   });
 
   describe('or', function () {
     it('must log or', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = or([
         function sum3(o) { return o[0] + o[1] === 3; },
         function are2Items(o) { return o.length === 2; }]);
-      validator([1, 2], result);
-      assert.deepEqual(result(), [
-       { path: '', name: 'sum3', result: true, value: [1, 2] },
-      ]);
+      validator([1, 2], errors);
+      assert.deepEqual(errors(), []);
     });
 
-    it('must log or, one fails', function () {
-      var result = validationResult(true);
+    it('must log or, all fail', function () {
+      var errors = validationErrors();
       var validator = or([
         function sum3(o) { return o[0] + o[1] === 3; },
         function are2Items(o) { return o.length === 2; }]);
-      validator([1, 3], result);
-      assert.deepEqual(result(), [
-        { path: '', name: 'sum3', result: false, value: [1, 3] },
-        { path: '', name: 'are2Items', result: true, value: [1, 3] },
-      ]);
+      validator([1, 1, 4], errors);
+      assert.deepEqual(errors(), [
+        { path: '', name: 'sum3', value: [ 1, 1, 4 ] },
+        { path: '', name: 'are2Items', value: [ 1, 1, 4 ] } ]);
+    });
+
+    it('must log or, only if relevant)', function () {
+      var errors = validationErrors();
+      var validator = or([false, true]);
+      validator(true, errors);
+      assert.deepEqual(errors(), []);
     });
   });
 
   describe('arrayOf', function () {
     it('must log arrayOf', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = arrayOf(5);
-      validator([5, 5], result);
-      assert.deepEqual(result(), [
-       { path: '', name: 'isArray', result: true, value: [5, 5] },
-       { path: '[0]', name: 'isNumber:5', result: true, value: 5 },
-       { path: '[1]', name: 'isNumber:5', result: true, value: 5 },
-      ]);
+      validator([5, 5], errors);
+      assert.deepEqual(errors(), []);
     });
 
     it('must log arrayOf, one fails', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = arrayOf(5);
-      validator([2, 5], result);
-      assert.deepEqual(result(), [
-       { path: '', name: 'isArray', result: true, value: [2, 5] },
-       { path: '[0]', name: 'isNumber:5', result: false, value: 2 },
-       { path: '[1]', name: 'isNumber:5', result: true, value: 5 },
+      validator([2, 5], errors);
+      assert.deepEqual(errors(), [
+       { path: '[0]', name: 'isNumber:5', value: 2 },
       ]);
+    });
+
+    it('must stop logging is validation is true (some)', function () {
+      var errors = validationErrors();
+      var validator = arrayOf(5, 'some');
+      validator([5, 2, 3], errors);
+      assert.deepEqual(errors(), []);
     });
   });
 
   describe('match - composed object', function () {
     it('must log composed object', function () {
-      var result = validationResult(true);
+      var errors = validationErrors();
       var validator = match({
         user: {
           name: /[a-zA-Z]+/,
@@ -236,19 +206,12 @@ describe('logger', function () {
           name: 'Maurizio',
           jobtitle: 'engineer'
         },
-        deleted: false
-      }, result);
+        deleted: true
+      }, errors);
 
-      assert.deepEqual(result(), [
-        { path: '', name: 'isObject', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
-        { path: 'user', name: 'hasAttribute', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
-        { path: 'user', name: 'isObject', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
-        { path: 'user.name', name: 'hasAttribute', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
-        { path: 'user.name', name: 'isRegExp:/[a-zA-Z]+/', result: true, value: 'Maurizio' },
-        { path: 'user.jobtitle', name: 'hasAttribute', result: true, value: { name: 'Maurizio', jobtitle: 'engineer' } },
-        { path: 'user.jobtitle', name: 'isString:engineer', result: true, value: 'engineer' },
-        { path: 'deleted', name: 'hasAttribute', result: true, value: { user: { name: 'Maurizio', jobtitle: 'engineer' }, deleted: false } },
-        { path: 'deleted', name: 'not(isTrue)', result: true, value: false }]);
+      assert.deepEqual(errors(), [
+        { path: 'deleted', name: 'not(isTrue)', value: true }
+      ]);
     });
   });
 });
