@@ -15,7 +15,10 @@ var isFive = function(o) {
 isFive(5); // true
 isFive(4); // false
 ```
-Writing complex validators may be a bit verbose. This library helps you to write short yet expressive validators.
+Writing complex validators may be a bit verbose. This library helps you to write short yet expressive validators. Ita also takes care of assigning the validator function a sensible name, that can be very helpful debugging. For example:
+```js
+match([1,'test']).name === 'array:[isNumber:1,isString:test]'
+```
 
 Importing the library
 =====================
