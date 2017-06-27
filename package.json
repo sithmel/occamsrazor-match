@@ -1,6 +1,6 @@
 {
   "name": "occamsrazor-match",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "helper library for writing validators",
   "main": "index.js",
   "scripts": {
