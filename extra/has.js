@@ -1,13 +1,16 @@
-var match = require('../lib/match');
+var setName = require('../lib/setName');
+var logger = require('../lib/logger');
 
 module.exports = function has(args) {
   if (!Array.isArray(args)) throw new Error('"has": requires an array');
-  var i, out = {};
-  for (i = 0, len = args.length; i < len; i++) {
-    if (typeof args[i] !== 'string') {
-      throw new Error('Occamsrazor (has): The arguments can only be strings');
+  var newfunc = function (o) {
+    for (var i = 0, len = args.length; i < len; i++) {
+      if (!(args[i] in o)) {
+        return false;
+      }
     }
-    out[args[i]] = undefined;
-  }
-  return match(out);
+    return true;
+  };
+  return setName(newfunc, 'has(' + args.join(',') + ')');
+  return logger(newfunc);
 };

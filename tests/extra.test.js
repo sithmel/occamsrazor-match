@@ -8,6 +8,9 @@ var or = require('../extra/or');
 var arrayOf = require('../extra/arrayOf');
 var every = require('../extra/every');
 var some = require('../extra/some');
+var isUndefined = require('../extra/isUndefined');
+var greaterThan = require('../extra/greaterThan');
+var lessThan = require('../extra/lessThan');
 
 describe('isPrototype/isInstanceOf', function () {
   var Square, square;
@@ -186,5 +189,35 @@ describe('some', function () {
 
   it('must not match (3)', function () {
     assert.isTrue(someFive([3, 5]));
+  });
+});
+
+describe('isUndefined', function () {
+  it('must match', function () {
+    assert.isTrue(isUndefined(undefined));
+  });
+
+  it('must not match', function () {
+    assert.isFalse(isUndefined('defined'));
+  });
+});
+
+describe('number', function () {
+  it('must be a number', function () {
+    var isNumber = greaterThan();
+    assert.isTrue(isNumber(1));
+    assert.isFalse(isNumber('1'));
+  });
+
+  it('must be greater than', function () {
+    var greaterThan0 = greaterThan(0);
+    assert.isTrue(greaterThan0(1));
+    assert.isFalse(greaterThan0(-1));
+  });
+
+  it('must be greater than', function () {
+    var lessThan0 = lessThan(0);
+    assert.isTrue(lessThan0(-1));
+    assert.isFalse(lessThan0(1));
   });
 });

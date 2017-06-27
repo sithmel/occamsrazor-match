@@ -62,15 +62,6 @@ describe('logger', function () {
     it('must log an object, validate false', function () {
       var errors = validationErrors();
       var validator = match({ key1: 1, key2: 2 });
-      validator({ key1: 1 }, errors);
-
-      assert.deepEqual(errors(), [
-        { path: 'key2', name: 'hasAttribute', value: { key1: 1 } }]);
-    });
-
-    it('must log an object, validate false', function () {
-      var errors = validationErrors();
-      var validator = match({ key1: 1, key2: 2 });
       validator({ key1: 3, key2: 2 }, errors);
 
       assert.deepEqual(errors(), [

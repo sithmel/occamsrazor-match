@@ -46,7 +46,7 @@ describe('validator name', function () {
   });
   describe('has', function () {
     it('must return name', function () {
-      assert.equal(has(['test1', 'test2']).name, 'object:{test1:isAnything,test2:isAnything}');
+      assert.equal(has(['test1', 'test2']).name, 'has(test1,test2)');
     });
   });
   describe('isInstanceOf', function () {

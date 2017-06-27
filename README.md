@@ -34,6 +34,13 @@ var or = require('occamsrazor-match/extra/or');
 var and = require('occamsrazor-match/extra/and');
 var some = require('occamsrazor-match/extra/some');
 var every = require('occamsrazor-match/extra/every');
+var greaterThan = require('occamsrazor-match/extra/greaterThan');
+var lessThan = require('occamsrazor-match/extra/lessThan');
+
+var isUndefined = require('occamsrazor-match/extra/isDefined');
+var isDefined = require('occamsrazor-match/extra/isUndefined');
+var isNumber = require('occamsrazor-match/extra/isNumber');
+var isString = require('occamsrazor-match/extra/isString');
 ```
 
 match
@@ -84,27 +91,27 @@ match - recursion
 -----------------
 "match" can take an array or an object and perform a nested validation:
 ```js
-var isPoint = match({ x : undefined, y: undefined });
+var isPoint = match({ x : isNumber, y: isNumber });
 isPoint({ x: 1, y: 2 }); // true
 isPoint({ x: 1, y: 2, z: 3 }); // true
 isPoint({ x: 1, z: 3 }); // false
 ```
-Object matching ensures the object has all the properties specified. It is not in the scope of the library find out what an object isn't, but rather what it is.
-Passing values as undefined indicates that I don't really care about their value.
+Passing values as undefined indicates that I don't really care about their value. Or if they are defined
 ```js
 var isPointOnXaxis = match({ x : 0, y: undefined });
 isPointOnXaxis({ x: 1, y: 2 }); // false
 isPointOnXaxis({ x: 0, y: 2 }); // true
+isPointOnXaxis({ x: 0 }); // true
 ```
 Values will be interpreted as specified before so I can implement recursive validation:
 ```js
-function isNumber(n) { return typeof n === 'number'; }
+function isSalary(n) { return typeof n === 'number' && n > 0; }
 
 var isEmployee = match({
   name : /[A-Za-z]+/,
   job: {
     position: undefined,
-    salary: isNumber
+    salary: isSalary
   }
 });
 ```
@@ -115,16 +122,18 @@ var startsWith123 = match([1, 2, 3]);
 startsWith123([1, 2, 3, 4]); // true
 startsWith123([2, 3, 4]); // false
 ```
+In Arrays the behaviour of undefined comes useful:
+```js
+var thirdArgIsNumber = match([undefined, undefined, isNumber]);
+thirdArgIsNumber(['a', 'b', 3, 4]); // true
+thirdArgIsNumber(['a', 'b', 'c']); // false
+```
 
 has
 ===
-This is a shortcut for a very common match:
+This checks for the existence of a list of attributes:
 ```js
 var isPoint = has(['x', 'y']);
-```
-is equivalent to:
-```js
-var isPoint = match({ x : undefined, y: undefined });
 ```
 
 isInstanceOf
@@ -187,6 +196,36 @@ allNegatives([-1, -2, -5]); // true
 allNegatives([-5, 5, -2]); // false
 ```
 
+greaterThan, lessThan
+=====================
+They are be useful to validate if a number is in a specific range.
+
+Example:
+```js
+var isGreaterThan0 = greaterThan(0);
+isGreaterThan0(1); // true
+isGreaterThan0(-1); // false
+
+var isValidDiscount = and(greaterThan(0), lessThan(100));
+```
+
+Common validators
+=================
+The library includes a series of very common validators:
+* isUndefined
+* isDefined
+* isString
+* isNumber
+
+Example:
+```js
+var isEmployee = match({
+  id: isDefined,
+  name: isString,
+  salary: isNumber,
+  title: or(isUndefined, 'mr', 'ms')
+});
+```
 
 Custom validator
 ================
@@ -270,4 +309,31 @@ var validator = arrayOf(5);
 validator([5, 5], errors);
 
 console.log(errors()); // returns a list of all errors
+```
+
+Validate decorator
+==================
+A very common use case for validation is checking if the arguments of a function match a certain criteria. Because of this I have included a function decorator that checks the arguments of the decorated function and throws an error if they don't match:
+```js
+var validate = require('occamsrazor-match/validate-decorators');
+
+var sum = validate(isNumber, isNumber, isNumber)(function sum(a, b, c) {
+  return a + b + c;
+});
+```
+if supported you can use the succint es7 syntax:
+```js
+@validate(isNumber, isNumber, isNumber)
+function sum(a, b, c) {
+  return a + b + c;
+}
+```
+The error object contains a description of all the things went wrong:
+```js
+try {
+  var result = sum('1', 2, 3);
+} catch (e) {
+  console.log(e.message); // Function called with wrong arguments: array:[isNumber,isNumber,isNumber]
+  console.log(e.errors); // [{ path: [0], name: 'isNumber', value: '1' }]
+}
 ```

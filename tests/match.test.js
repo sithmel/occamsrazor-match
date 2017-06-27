@@ -27,8 +27,8 @@ describe('match', function () {
     assert.isTrue(hasWidth({ width: 1, height: 2 }));
     assert.isTrue(hasHeight_hasWidth({ width: 1, height: 2 }));
 
-    assert.isFalse(hasWidth({}));
-    assert.isFalse(hasHeight_hasWidth({ height: 2 }));
+    assert.isTrue(hasWidth({}));
+    assert.isTrue(hasHeight_hasWidth({ height: 2 }));
   });
 
   it('must match using objects and values', function () {
