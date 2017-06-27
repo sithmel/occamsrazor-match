@@ -62,13 +62,14 @@ isHello('hello'); // true
 isFive(5); // true
 ```
 
-Using undefined you create a validator that matches any value:
+Using undefined you create a validator that matches any value.
 ```js
 var isAnything = match(undefined);
 isAnything(5);
 isAnything('hello');
 isAnything({ greeting: 'hello' });
 ```
+To match **undefined** there is an helper (isUndefined), explained below. Also if you wish to use a more explicit style, you can use the isAnything helper.
 
 Using a regular expression, the validator will run that, on the value.
 ```js
@@ -216,6 +217,7 @@ The library includes a series of very common validators:
 * isDefined
 * isString
 * isNumber
+* isAnything (always returns true)
 
 Example:
 ```js
