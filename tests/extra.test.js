@@ -8,6 +8,8 @@ var or = require('../extra/or');
 var arrayOf = require('../extra/arrayOf');
 var every = require('../extra/every');
 var some = require('../extra/some');
+var everyValues = require('../extra/everyValues');
+var someValues = require('../extra/someValues');
 var isUndefined = require('../extra/isUndefined');
 var greaterThan = require('../extra/greaterThan');
 var lessThan = require('../extra/lessThan');
@@ -116,30 +118,6 @@ describe('and', function () {
   });
 });
 
-describe('arrayOf', function () {
-  var areFive;
-
-  before(function () {
-    areFive = arrayOf(5);
-  });
-
-  it('must match', function () {
-    assert.isTrue(areFive([5]));
-  });
-
-  it('must match (2)', function () {
-    assert.isTrue(areFive([5, 5]));
-  });
-
-  it('must not match', function () {
-    assert.isFalse(areFive([3]));
-  });
-
-  it('must not match (2)', function () {
-    assert.isFalse(areFive([5, 3]));
-  });
-});
-
 describe('every', function () {
   var areFive;
 
@@ -161,6 +139,10 @@ describe('every', function () {
 
   it('must not match (2)', function () {
     assert.isFalse(areFive([5, 3]));
+  });
+
+  it('must not match (3)', function () {
+    assert.isTrue(areFive([]));
   });
 });
 
@@ -189,6 +171,66 @@ describe('some', function () {
 
   it('must not match (3)', function () {
     assert.isTrue(someFive([3, 5]));
+  });
+
+  it('must not match (4)', function () {
+    assert.isFalse(someFive([]));
+  });
+});
+
+describe('everyValues', function () {
+  var areFive;
+
+  before(function () {
+    areFive = everyValues(5);
+  });
+
+  it('must match', function () {
+    assert.isTrue(areFive({v: 5}));
+  });
+
+  it('must match (2)', function () {
+    assert.isTrue(areFive({ v: 5, v1: 5 }));
+  });
+
+  it('must not match', function () {
+    assert.isFalse(areFive({ v: 3 }));
+  });
+
+  it('must not match (2)', function () {
+    assert.isFalse(areFive({ v: 5, v1: 3 }));
+  });
+
+  it('must not match (3)', function () {
+    assert.isTrue(areFive({}));
+  });
+});
+
+describe('someValues', function () {
+  var someFive;
+
+  before(function () {
+    someFive = someValues(5);
+  });
+
+  it('must match', function () {
+    assert.isTrue(someFive({ v: 5 }));
+  });
+
+  it('must match (2)', function () {
+    assert.isTrue(someFive({ v: 5, v1: 5 }));
+  });
+
+  it('must not match', function () {
+    assert.isFalse(someFive({ v: 3 }));
+  });
+
+  it('must not match (2)', function () {
+    assert.isTrue(someFive({ v: 5, v1: 3 }));
+  });
+
+  it('must not match (3)', function () {
+    assert.isFalse(someFive({}));
   });
 });
 

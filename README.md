@@ -34,6 +34,8 @@ var or = require('occamsrazor-match/extra/or');
 var and = require('occamsrazor-match/extra/and');
 var some = require('occamsrazor-match/extra/some');
 var every = require('occamsrazor-match/extra/every');
+var someValues = require('occamsrazor-match/extra/someValues');
+var everyValues = require('occamsrazor-match/extra/everyValues');
 var greaterThan = require('occamsrazor-match/extra/greaterThan');
 var lessThan = require('occamsrazor-match/extra/lessThan');
 
@@ -181,9 +183,9 @@ is5or9(9); // true
 is5or9(3); // false
 ```
 
-some/every
-==========
-This couple of validators can be used to validate arrays. It takes a validator as argument (it uses "match" behind the scene) and checks the array items against that validator. In the case of "some", at least a check should pass to return true. In the case of "every", all of them should pass.
+some/every and someValues/everyValues
+=====================================
+some/every validates arrays. It takes a validator as argument (it uses "match" behind the scene) and checks the array items against that validator. In the case of "some", at least a check should pass to return true. In the case of "every", all of them should pass.
 ```js
 var atLeastOne5 = some(5);
 atLeastOne5([1, 2, 5]); // true
@@ -196,6 +198,7 @@ var allNegatives = every(function isNegative(n) { return n < 0; });
 allNegatives([-1, -2, -5]); // true
 allNegatives([-5, 5, -2]); // false
 ```
+someValues and everyValues do the same on all values of an object.
 
 greaterThan, lessThan
 =====================
