@@ -1,18 +1,18 @@
-var setName = require('../lib/setName');
-var logger = require('../lib/logger');
+var setName = require('../lib/setName')
+var logger = require('../lib/logger')
 
-function isNumber(n) {
-  return typeof n === 'number' && !isNaN(n);
+function isNumber (n) {
+  return typeof n === 'number' && !isNaN(n)
 }
 
-function lessThan(n) {
+function lessThan (n) {
   if (!isNumber(n)) {
-    return logger(isNumber);
+    return logger(isNumber)
   }
   var newfunc = function (o) {
-    return isNumber(o) && o < n;
-  };
-  return logger(setName(newfunc, 'lessThan(' + n + ')'));
+    return isNumber(o) && o < n
+  }
+  return logger(setName(newfunc, 'lessThan(' + n + ')'))
 }
 
-module.exports = lessThan;
+module.exports = lessThan

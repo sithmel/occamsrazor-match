@@ -1,8 +1,7 @@
-var setName = require('../lib/setName');
-var logger = require('../lib/logger');
+var logger = require('../lib/logger')
 
-function isString(s) {
-  return typeof s === 'string';
+function isString (s) {
+  return typeof s === 'string'
 }
 
-module.exports = logger(isString);
+module.exports = logger(isString)

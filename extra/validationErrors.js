@@ -1,9 +1,9 @@
-module.exports = function validationErrors() {
-  var logs = [];
+module.exports = function validationErrors () {
+  var logs = []
   return function (obj) {
     if (!obj) {
-      return logs;
+      return logs
     }
-    logs.push(obj);
-  };
-};
+    logs.push(obj)
+  }
+}

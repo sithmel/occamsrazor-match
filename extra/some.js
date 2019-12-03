@@ -1,5 +1,5 @@
-var arrayOf = require('./arrayOf');
+var arrayOf = require('./arrayOf')
 
-module.exports = function some(args) {
-  return arrayOf(args, true);
-};
+module.exports = function some (args) {
+  return arrayOf(args, true)
+}

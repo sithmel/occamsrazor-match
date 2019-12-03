@@ -1,5 +1,5 @@
-function isAnything() {
-  return true;
+function isAnything () {
+  return true
 }
 
-module.exports = isAnything;
+module.exports = isAnything
